@@ -1,0 +1,10 @@
+{
+    "Influx_Host": "127.0.0.1",
+    "Influx_Port": "8086",
+    "Influx_Token": "xxxxxxxxxxxxxxxxxx==",
+    "Influx_Bucket": "habucket",
+    "Influx_Org": "haorg",
+    "TrueNas_HostName": "myservername",
+    "TrueNas_OS": "scale",
+    "TrueNas_Category": "filesystem"
+}
