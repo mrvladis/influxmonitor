@@ -4,6 +4,8 @@ This tool is designed to collect storage metrics from the local system and injec
 
 ## Overview
 
+This tool provides an additional metrics gathering for the TrueNas based system. TrueNas supports data gathering into the InfluxDB via Telegraf. Current set of metrics doesn't include the information about the space used or available on the pool and it's mount points.
+
 The tool is written in Go and uses the `influxdb-client-go` library to interact with the InfluxDB database. It reads configuration settings from a JSON file, including the InfluxDB host, port, organization, bucket, and authentication token. The tool then executes the `df` command to retrieve storage metrics and parses the output to extract the relevant information. Finally, it connects to the InfluxDB instance and writes the storage metrics to the specified bucket.
 
 ## Prerequisites
@@ -42,7 +44,10 @@ Before running the tool, you need to create a configuration file named `config.j
   "InfluxHttpSchema": "http",
   "InfluxToken": "your-influxdb-token",
   "InfluxOrg": "your-influxdb-organization",
-  "InfluxBucket": "XXXXXXXXXXXXXXXXXXXX"
+  "InfluxBucket": "XXXXXXXXXXXXXXXXXXXX",
+  "TrueNas_HostName": "myservername",
+  "TrueNas_OS": "scale",
+  "TrueNas_Category": "filesystem"
 }
 ```
 
@@ -56,11 +61,15 @@ Run the tool:
 ./storage-metrics-influxdb
 ```
 
+Add the tool into the TrueNas cron job scheduler. Set the schedule to run every 10 minutes or so. 
+
 The tool will output the current time and indicate that it's trying to connect to the InfluxDB instance. If the connection is successful, it will print a message indicating that the connection was successful.
 
 The tool will then retrieve the storage metrics and write them to the specified InfluxDB bucket.
 
 Once the data is written, the tool will print a message indicating that the InfluxDB was updated successfully and flush any remaining data.
+
+
 
 ## Contributing
 
