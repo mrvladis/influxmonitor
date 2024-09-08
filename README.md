@@ -69,7 +69,47 @@ The tool will then retrieve the storage metrics and write them to the specified 
 
 Once the data is written, the tool will print a message indicating that the InfluxDB was updated successfully and flush any remaining data.
 
+## Dashboard in Grafana
 
+### Example of the Grafana dashboard
+
+#### Pool usage
+
+![Pool Usage](static/pool_space_usage.png)
+
+#### FileSystem spae usage over time
+
+![Filesystem Usage](static/filesystem_space_used_percent.png)
+
+
+### Grafana Variable
+
+Grafana dashboard variable used to dynamically query all available pools and give flexibility with the dashboard visualization
+
+![Grafana Variable](static/grafana_variable.png)
+
+Grafana Variable - %{filesystem} Query
+```bash
+from(bucket: "${bucket}")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "filesystem")
+  |> keyValues(keyColumns: ["type"])
+  |> group()
+  |> keep(columns: ["type"])
+  |> distinct(column: "type")
+```
+
+Grafana Graph query example:
+```bash
+from(bucket: "${bucket}")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "filesystem")
+  |> filter(fn: (r) => r["type"] =~ /^${filesystem:regex}$/)
+  |> filter(fn: (r) => r["_field"] == "use")
+  |> filter(fn: (r) => r["host"] == "${host}")
+  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+  |> yield(name: "mean")
+```
 
 ## Contributing
 
